@@ -592,7 +592,7 @@ export const Route = createFileRoute('/api/send-stream')({
                       content: userContent,
                     },
                   ]
-                  // Vanilla Hermes Agent (>=v0.12.x) ships a structured
+                  // Vanilla AI Agent (>=v0.12.x) ships a structured
                   // Responses-API streaming surface at POST /v1/responses
                   // that carries full tool args + results, unlike the
                   // /v1/chat/completions surface which only emits a thin
@@ -932,7 +932,7 @@ export const Route = createFileRoute('/api/send-stream')({
               // useRealtimeChatHistory from creating duplicate message bubbles.
               const skipPublish = true
 
-              // Mid-run tool polling: vanilla Hermes Agent currently does not
+              // Mid-run tool polling: vanilla AI Agent currently does not
               // emit tool.* SSE events live (callback signature drift). Until
               // upstream fixes that, we synthesize live tool events by polling
               // the agent's session messages every ~1.5s during the run and
@@ -1382,7 +1382,7 @@ export const Route = createFileRoute('/api/send-stream')({
 
                     if (event === 'run.completed') {
                       // Backfill tool calls from session history.
-                      // Hermes Agent currently does not stream tool.* events
+                      // AI Agent currently does not stream tool.* events
                       // reliably, but it persists tool calls on the assistant
                       // message. Fetch the latest assistant message and emit
                       // synthetic 'tool' events for each tool call so the

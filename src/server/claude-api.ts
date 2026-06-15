@@ -1,8 +1,8 @@
 /**
- * Hermes Agent FastAPI Client
+ * AI Agent FastAPI Client
  *
- * HTTP client for the Hermes Agent FastAPI backend (default: http://127.0.0.1:8642).
- * Replaces legacy WebSocket connection for the Hermes Workspace fork.
+ * HTTP client for the AI Agent FastAPI backend (default: http://127.0.0.1:8642).
+ * Replaces legacy WebSocket connection for the agent-os fork.
  */
 
 import {
@@ -75,7 +75,7 @@ async function claudeGet<T>(path: string): Promise<T> {
   const res = await fetch(`${CLAUDE_API}${path}`, { headers: _authHeaders() })
   if (!res.ok) {
     const body = await res.text().catch(() => '')
-    throw new Error(`Hermes Agent API ${path}: ${res.status} ${body}`)
+    throw new Error(`AI Agent API ${path}: ${res.status} ${body}`)
   }
   return res.json() as Promise<T>
 }
@@ -88,7 +88,7 @@ async function claudePost<T>(path: string, body?: unknown): Promise<T> {
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes Agent API POST ${path}: ${res.status} ${text}`)
+    throw new Error(`AI Agent API POST ${path}: ${res.status} ${text}`)
   }
   return res.json() as Promise<T>
 }
@@ -101,7 +101,7 @@ async function claudePatch<T>(path: string, body: unknown): Promise<T> {
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes Agent API PATCH ${path}: ${res.status} ${text}`)
+    throw new Error(`AI Agent API PATCH ${path}: ${res.status} ${text}`)
   }
   return res.json() as Promise<T>
 }
@@ -113,7 +113,7 @@ async function claudeDeleteReq(path: string): Promise<void> {
   })
   if (!res.ok) {
     const text = await res.text().catch(() => '')
-    throw new Error(`Hermes Agent API DELETE ${path}: ${res.status} ${text}`)
+    throw new Error(`AI Agent API DELETE ${path}: ${res.status} ${text}`)
   }
 }
 
@@ -367,7 +367,7 @@ type StreamChatOptions = {
 }
 
 /**
- * Send a chat message and stream SSE events from Hermes Agent FastAPI.
+ * Send a chat message and stream SSE events from AI Agent FastAPI.
  * Returns a promise that resolves when the stream ends.
  */
 export async function streamChat(
@@ -403,7 +403,7 @@ export async function streamChat(
   let currentEvent = ''
 
   // Debug tap: when HERMES_TOOL_DEBUG=1, dump every raw SSE event to a file so
-  // we can inspect what vanilla Hermes Agent actually emits during tool calls
+  // we can inspect what vanilla AI Agent actually emits during tool calls
   // (event names + data shapes) without changing any agent code.
   const toolDebug = process.env.HERMES_TOOL_DEBUG === '1'
   let toolDebugStream: NodeJS.WritableStream | null = null

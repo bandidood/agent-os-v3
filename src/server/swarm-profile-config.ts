@@ -2,7 +2,7 @@
  * Patch a swarm worker's profile `config.yaml` so its `model.provider`
  * and `model.default` match the roster.
  *
- * Hermes Agent reads `~/.hermes/profiles/<workerId>/config.yaml` on every
+ * AI Agent reads `~/.hermes/profiles/<workerId>/config.yaml` on every
  * `hermes` invocation. The wrapper at `~/.local/bin/<workerId>` invokes
  * `hermes chat --continue` with no `--model` flag, so the per-profile
  * config wins. Without a sync step, the roster's `model:` field is purely

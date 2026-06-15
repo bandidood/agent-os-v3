@@ -1662,7 +1662,7 @@ export function ChatScreen({
           }
         : statusQuery.data && !statusQuery.data.ok
           ? {
-              message: statusQuery.data.error || 'Hermes Agent unavailable',
+              message: statusQuery.data.error || 'AI Agent unavailable',
               status: statusQuery.data.status,
             }
           : null
@@ -1705,7 +1705,7 @@ export function ChatScreen({
   // Memory, etc.), the component re-mounts. If a response finished while we
   // were away, the initial refetch may hit stale data. A delayed re-refetch
   // ensures we pick up responses that were persisted shortly after the first
-  // fetch. See: https://github.com/outsourc-e/hermes-workspace/issues/43
+  // fetch. See: https://github.com/outsourc-e/agent-os-v3/issues/43
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void historyQuery.refetch()
@@ -1789,7 +1789,7 @@ export function ChatScreen({
       : historyError
         ? `Failed to load history. ${historyError}`
         : statusError
-          ? `Hermes Agent unavailable. ${statusError.message}`
+          ? `AI Agent unavailable. ${statusError.message}`
           : null
     if (message) setError(message)
   }, [
@@ -2215,7 +2215,7 @@ export function ChatScreen({
 
   useEffect(() => {
     if (false) {
-      // Server connection checks removed — Hermes Agent uses direct API
+      // Server connection checks removed — AI Agent uses direct API
       hasSeenDisconnectRef.current = true
       retriedQueuedMessageKeysRef.current.clear()
       return

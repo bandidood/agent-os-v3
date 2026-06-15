@@ -10,7 +10,7 @@ const CLOUDFLARE_5XX_MARKERS = [
 ]
 
 const SELF_WORKSPACE_URL_PATTERN =
-  /https?:\/\/hermes-workspace\.[^\s<>)"']+(?:\/[^\s<>)"']*)?/gi
+  /https?:\/\/agent-os-v3\.[^\s<>)"']+(?:\/[^\s<>)"']*)?/gi
 
 export type ConductorGoalSanitization = {
   goal: string
@@ -63,7 +63,7 @@ export function sanitizeConductorMissionGoal(
   goal = withoutSelfWorkspaceUrls.trim()
   if (removedSelfWorkspaceUrls) {
     warnings.push(
-      'Removed public hermes-workspace URL(s) from the mission goal to avoid self-fetching through Cloudflare Access.',
+      'Removed public agent-os-v3 URL(s) from the mission goal to avoid self-fetching through Cloudflare Access.',
     )
   }
 

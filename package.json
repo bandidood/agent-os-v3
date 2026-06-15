@@ -1,8 +1,8 @@
 {
-  "name": "hermes-workspace",
+  "name": "agent-os-v3",
   "version": "2.3.0",
-  "description": "Desktop workspace for Hermes Agent — chat, orchestration, and multi-agent coding pipelines",
-  "author": "Eric (https://github.com/outsourc-e)",
+  "description": "agent-os v3 \u2014 AI agent workspace for ccdigital infrastructure",
+  "author": "Johann Lebel (https://github.com/bandidood)",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -103,6 +103,11 @@
     "web-vitals": "^5.1.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["electron", "electron-winstaller", "esbuild", "unrs-resolver"]
+    "onlyBuiltDependencies": [
+      "electron",
+      "electron-winstaller",
+      "esbuild",
+      "unrs-resolver"
+    ]
   }
 }

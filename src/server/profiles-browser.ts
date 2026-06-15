@@ -542,7 +542,7 @@ export function setActiveProfile(name: string): void {
     fs.writeFileSync(getActiveProfilePath(), `${normalized}\n`, 'utf-8')
   }
   console.warn(
-    `[profiles] Active profile set to "${normalized}". Restart the Hermes Agent gateway for this profile switch to take effect.`,
+    `[profiles] Active profile set to "${normalized}". Restart the AI Agent gateway for this profile switch to take effect.`,
   )
 }
 

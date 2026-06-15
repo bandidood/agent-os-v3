@@ -796,7 +796,7 @@ async function streamPortableConductorMission(params: {
       history: [],
       idempotencyKey: crypto.randomUUID(),
       model: params.model || undefined,
-      locale: typeof window !== 'undefined' ? localStorage.getItem('hermes-workspace-locale') || 'en' : 'en',
+      locale: typeof window !== 'undefined' ? localStorage.getItem('agent-os-v3-locale') || 'en' : 'en',
     }),
     signal: params.signal,
   })

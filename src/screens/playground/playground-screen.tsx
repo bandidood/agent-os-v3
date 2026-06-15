@@ -976,7 +976,7 @@ function TitleScreen({
               }}
             >
               <span style={{ color: '#facc15' }}>✦</span>
-              Hermes Agent Realm
+              AI Agent Realm
               <span className="opacity-60">· Nous Research × Kimi</span>
             </div>
             <img
@@ -1345,13 +1345,13 @@ function CameraPresetToast() {
 
 const HERMES_LORE_LINES = [
   'Hermes carried prompts between the gods of Olympus and the builders of Earth.',
-  'A Hermes Agent is just a fast, faithful messenger — with memory.',
+  'A AI Agent is just a fast, faithful messenger — with memory.',
   'Promptcraft is the first skill. Diplomacy is the last.',
   'Build small. Ship now. Iterate at the speed of intent.',
   'Memory turns moments into a story. Story turns a tool into a teammate.',
   'The Forge is where prompts harden into tools. The Arena is where they earn their keep.',
   'Six worlds. One builder. Forge your path.',
-  'Every NPC here teaches a real Hermes Agent skill. Listen.',
+  'Every NPC here teaches a real AI Agent skill. Listen.',
   'Routing is the art of choosing the right tool, the right model, the right moment.',
   'You are not alone. The Agora is full of builders walking the same road.',
 ]

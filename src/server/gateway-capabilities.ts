@@ -134,7 +134,7 @@ export function getResolvedUrls(): {
 }
 
 export const CLAUDE_UPGRADE_INSTRUCTIONS =
-  'For full features, install Hermes Agent from source (`git clone https://github.com/NousResearch/hermes-agent && cd hermes-agent && pip install -e .`), then start the gateway on :8642 (`hermes gateway run`). For the extended APIs (Sessions, Skills, Config, Jobs) also start the dashboard on :9119 (`hermes dashboard`).'
+  'For full features, install AI Agent from source (`git clone https://github.com/NousResearch/hermes-agent && cd hermes-agent && pip install -e .`), then start the gateway on :8642 (`hermes gateway run`). For the extended APIs (Sessions, Skills, Config, Jobs) also start the dashboard on :9119 (`hermes dashboard`).'
 
 export const DASHBOARD_REQUIRED_INSTRUCTIONS =
   'Hermes gateway core APIs are healthy, but dashboard-backed APIs are unavailable. Start the dashboard on :9119 (`hermes dashboard`) or point HERMES_DASHBOARD_URL at the running dashboard service.'

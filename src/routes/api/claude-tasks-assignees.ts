@@ -1,6 +1,6 @@
 /**
  * Proxy endpoint — returns available task assignees.
- * Reads agent profiles from the Hermes Agent gateway and combines with the
+ * Reads agent profiles from the AI Agent gateway and combines with the
  * configured human reviewer name (tasks.human_reviewer in config.yaml).
  * Falls back to profile directory listing if the gateway doesn't have
  * a /api/tasks/assignees endpoint.

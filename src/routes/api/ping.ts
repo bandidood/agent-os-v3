@@ -33,7 +33,7 @@ export const Route = createFileRoute('/api/ping')({
           return Response.json(
             {
               ok: false,
-              error: 'Hermes Agent unavailable',
+              error: 'AI Agent unavailable',
               status: 503,
               claudeUrl: CLAUDE_API,
             } satisfies PingResponse,

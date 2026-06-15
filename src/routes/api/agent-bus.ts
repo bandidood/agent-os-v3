@@ -176,7 +176,7 @@ async function handleAction(request: Request) {
       render: false,
       allow_paid_provider: false,
       safe_mode: true,
-      source: 'hermes-workspace',
+      source: 'agent-os-v3',
       created_at: new Date().toISOString(),
     }
     return Response.json({ ok: true, action, mission: { ...payload, mission_record_path: writeMission(payload) } })
@@ -199,7 +199,7 @@ async function handleAction(request: Request) {
       reason: contract.reason,
       external_actions: [],
       safe_mode: true,
-      source: 'hermes-workspace',
+      source: 'agent-os-v3',
       created_at: new Date().toISOString(),
     }
     return Response.json({ ok: true, action, mission: { ...payload, mission_record_path: writeMission(payload) } })

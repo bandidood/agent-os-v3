@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { usePageTitle } from '@/hooks/use-page-title'
 
-const HERMES_REPO_URL = 'https://github.com/outsourc-e/hermes-workspace'
+const HERMES_REPO_URL = 'https://github.com/outsourc-e/agent-os-v3'
 const HERMES_DISCORD_URL = 'https://discord.com/invite/agentd'
 
 export const Route = createFileRoute('/early-access')({
@@ -69,7 +69,7 @@ function EarlyAccessRoute() {
 
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             {[
-              ['1', 'Star the repo', 'Star Hermes Workspace on GitHub for updates.'],
+              ['1', 'Star the repo', 'Star agent-os on GitHub for updates.'],
               ['2', 'Hop in Discord', 'Get notified the moment public play is live.'],
               ['3', 'Watch the trailer', 'The launch trailer drops with the public world.'],
             ].map(([i, title, copy]) => (

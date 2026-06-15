@@ -14,7 +14,7 @@ async function makeDir(...parts: Array<string>) {
 }
 
 beforeEach(async () => {
-  tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'hermes-workspace-route-'))
+  tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'agent-os-v3-route-'))
   process.env = { ...originalEnv }
   process.env.HERMES_HOME = path.join(tempRoot, '.hermes')
   delete process.env.HERMES_WORKSPACE_DIR

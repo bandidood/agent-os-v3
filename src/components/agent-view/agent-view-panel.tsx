@@ -90,7 +90,7 @@ function getMiniAgentCardStatus(status: string): AgentCardStatus {
   return 'running'
 }
 
-const AGENT_NAME_KEY = 'hermes-workspace-agent-name'
+const AGENT_NAME_KEY = 'agent-os-v3-agent-name'
 
 function getStoredAgentName(): string {
   try {
@@ -114,7 +114,7 @@ const STATE_GLOW: Record<string, string> = {
 // ── Usage helpers (inline in OrchestratorCard) ─────────────────────────────
 
 const USAGE_POLL_MS = 30_000
-const PREFERRED_PROVIDER_KEY_OC = 'hermes-workspace-preferred-provider'
+const PREFERRED_PROVIDER_KEY_OC = 'agent-os-v3-preferred-provider'
 
 type OcUsageLine = {
   type: 'progress' | 'text' | 'badge'

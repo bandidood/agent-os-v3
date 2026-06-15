@@ -75,7 +75,7 @@ export type PlaygroundQuest = {
   chapter: string
   title: string
   description: string
-  /** What this quest teaches about Hermes Agent / product-building. */
+  /** What this quest teaches about AI Agent / product-building. */
   lesson?: string
   /** Why the player should care, shown in the journal as practical payoff. */
   payoff?: string
@@ -362,7 +362,7 @@ export const PLAYGROUND_QUESTS: PlaygroundQuest[] = [
     chapter: 'Training Grounds Tutorial',
     title: 'Move and Speak',
     description: 'Walk to Athena at the Arrival Circle and accept the Hermes Sigil.',
-    lesson: 'Hermes Agent is the messenger layer for your workflow: one place to route prompts to models, tools, files, memory, and channels.',
+    lesson: 'AI Agent is the messenger layer for your workflow: one place to route prompts to models, tools, files, memory, and channels.',
     payoff: 'You learn the basic interaction loop: approach an agent, choose a response, receive useful work back.',
     objectives: [
       {

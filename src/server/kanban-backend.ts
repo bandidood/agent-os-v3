@@ -508,7 +508,7 @@ const claudeBackend: KanbanBackend = {
 
 // Hermes Dashboard kanban plugin backend (HTTP proxy).
 //
-// Used when the upstream Hermes Agent dashboard exposes the kanban plugin
+// Used when the upstream AI Agent dashboard exposes the kanban plugin
 // (caps.kanban === true). Goes through HTTP rather than direct SQLite so
 // remote workspaces (Docker, VPS, separate machines) can use the same
 // kanban DB the agent is using. See kanban-dashboard-proxy.ts.
@@ -544,7 +544,7 @@ const dashboardProxyBackend: KanbanBackend = {
       body: (input.spec ?? '').trim() || undefined,
       assignee: input.assignedWorker?.trim() || undefined,
       status: mapLaneToDashboardStatus(input.status ?? 'backlog'),
-      created_by: input.createdBy?.trim() || 'hermes-workspace',
+      created_by: input.createdBy?.trim() || 'agent-os-v3',
     })
     return dashboardTaskToCard(task)
   },

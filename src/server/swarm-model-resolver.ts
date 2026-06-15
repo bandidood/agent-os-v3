@@ -1,7 +1,7 @@
 /**
  * Resolve a roster `model:` display string (e.g. "Opus 4.7", "GPT-5.5",
  * "PC1 Coder") into the concrete `provider` + `default` model id pair
- * that Hermes Agent's `config.yaml` expects.
+ * that AI Agent's `config.yaml` expects.
  *
  * The roster YAML carries a human-friendly label so the Swarm UI can
  * render it without a lookup. The runtime needs the precise ids though,
@@ -18,7 +18,7 @@ export type ResolvedSwarmModel = {
 }
 
 /**
- * Map a roster `model:` label to a Hermes Agent provider+model. The label
+ * Map a roster `model:` label to a AI Agent provider+model. The label
  * comparison is case-insensitive and ignores extra whitespace. Returns
  * `null` when the label is empty, blank, or unrecognised.
  */

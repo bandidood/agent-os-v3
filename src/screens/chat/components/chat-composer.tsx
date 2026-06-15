@@ -183,7 +183,7 @@ type ModelSwitchNotice = {
 
 // Models are fetched through the workspace API proxy (/api/models, /api/claude-proxy)
 // to support Docker and reverse-proxy deployments where the browser cannot reach
-// the Hermes Agent gateway directly.
+// the AI Agent gateway directly.
 
 function readModelText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
@@ -1191,7 +1191,7 @@ function ChatComposerComponent({
 
   const currentModel = currentModelQuery.data ?? ''
 
-  // Auto-switch to hermes-agent model on mount (Hermes Workspace uses Hermes Agent)
+  // Auto-switch to hermes-agent model on mount (agent-os uses AI Agent)
   // Removed: auto-switch to hermes-agent. The workspace respects the
   // model/provider configured in ~/.hermes/config.yaml. Users switch
   // via the model selector or Settings page.
@@ -1226,7 +1226,7 @@ function ChatComposerComponent({
   // Derive the label directly from the store so navigation between sessions
   // updates without a render-window flash from a stale React-state mirror.
   const modelButtonLabel =
-    persistedSessionModel || currentModel || configuredModel || '⚕ Hermes Agent'
+    persistedSessionModel || currentModel || configuredModel || '⚕ AI Agent'
 
   // Measure composer height and set CSS variable for scroll padding
   useLayoutEffect(() => {

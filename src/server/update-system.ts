@@ -290,7 +290,7 @@ export function readWorkspaceUpdateStatus(
   if (installKind === 'desktop') {
     return {
       id: 'workspace',
-      label: 'Hermes Workspace',
+      label: 'agent-os',
       installKind,
       version,
       path: repoPath,
@@ -310,7 +310,7 @@ export function readWorkspaceUpdateStatus(
   if (installKind === 'docker') {
     return {
       id: 'workspace',
-      label: 'Hermes Workspace',
+      label: 'agent-os',
       installKind,
       version,
       path: repoPath,
@@ -330,7 +330,7 @@ export function readWorkspaceUpdateStatus(
   if (!gitRepo) {
     return {
       id: 'workspace',
-      label: 'Hermes Workspace',
+      label: 'agent-os',
       installKind: 'unknown',
       version,
       path: repoPath,
@@ -348,8 +348,8 @@ export function readWorkspaceUpdateStatus(
 
   const remoteUrl = git(['remote', 'get-url', 'origin'], gitRepo)
   const repoMatches = remoteUrlMatches(remoteUrl, [
-    'hermes-workspace',
-    'outsourc-e/hermes-workspace',
+    'agent-os-v3',
+    'outsourc-e/agent-os-v3',
   ])
   if (repoMatches) git(['fetch', 'origin', '--quiet'], gitRepo, 30_000)
   const currentHead = git(['rev-parse', 'HEAD'], gitRepo)
@@ -371,7 +371,7 @@ export function readWorkspaceUpdateStatus(
 
   return {
     id: 'workspace',
-    label: 'Hermes Workspace',
+    label: 'agent-os',
     installKind: 'git',
     version,
     path: repoPath,
@@ -393,7 +393,7 @@ export function readWorkspaceUpdateStatus(
               : 'blocked'
             : 'current',
     reason: !repoMatches
-      ? 'Workspace origin remote does not look like hermes-workspace.'
+      ? 'Workspace origin remote does not look like agent-os-v3.'
       : !supportedBranch
         ? 'Workspace one-click updates are only enabled on main/master branches.'
         : dirty
@@ -435,7 +435,7 @@ export function readAgentUpdateStatus(): ProductUpdateStatus {
   if (!repoPath) {
     return {
       id: 'agent',
-      label: 'Hermes Agent',
+      label: 'AI Agent',
       installKind: 'unknown',
       version,
       path,
@@ -447,7 +447,7 @@ export function readAgentUpdateStatus(): ProductUpdateStatus {
       canUpdate: false,
       state: 'unsupported',
       reason:
-        'Hermes Agent git checkout was not found. Bundled desktop installs will update through the app updater.',
+        'AI Agent git checkout was not found. Bundled desktop installs will update through the app updater.',
       updateMode: 'manual',
     }
   }
@@ -474,7 +474,7 @@ export function readAgentUpdateStatus(): ProductUpdateStatus {
 
   return {
     id: 'agent',
-    label: 'Hermes Agent',
+    label: 'AI Agent',
     installKind: 'git',
     version,
     path,
@@ -494,13 +494,13 @@ export function readAgentUpdateStatus(): ProductUpdateStatus {
             ? 'blocked'
             : 'current',
     reason: !repoMatches
-      ? 'Hermes Agent origin remote does not look like hermes-agent.'
+      ? 'AI Agent origin remote does not look like hermes-agent.'
       : dirty
-        ? 'Hermes Agent checkout has local changes. Commit, stash, or remove the listed files before updating.'
+        ? 'AI Agent checkout has local changes. Commit, stash, or remove the listed files before updating.'
         : updateAvailable && !canSync
-          ? 'Hermes Agent update could not verify the remote branch ref.'
+          ? 'AI Agent update could not verify the remote branch ref.'
           : updateAvailable && !ff
-            ? 'Hermes Agent branch diverged from origin. One-click update will realign to the remote branch.'
+            ? 'AI Agent branch diverged from origin. One-click update will realign to the remote branch.'
             : null,
     blockingFiles: dirty ? listDirtyFiles(repoPath) : undefined,
     updateMode: 'hermes-update',
@@ -596,7 +596,7 @@ export function applyWorkspaceUpdate(): ApplyUpdateResult {
   const releaseNotes = [
     {
       product: 'workspace' as const,
-      label: 'Hermes Workspace',
+      label: 'agent-os',
       from: before.currentHead,
       to: after.currentHead,
       commits: readCommits(
@@ -627,7 +627,7 @@ export function applyAgentUpdate(): ApplyUpdateResult {
       restartRequired: false,
       status: before,
       releaseNotes: [],
-      error: before.reason || 'Hermes Agent update is not available.',
+      error: before.reason || 'AI Agent update is not available.',
     }
   }
 
@@ -657,7 +657,7 @@ export function applyAgentUpdate(): ApplyUpdateResult {
   const releaseNotes = [
     {
       product: 'agent' as const,
-      label: 'Hermes Agent',
+      label: 'AI Agent',
       from: before.currentHead,
       to: after.currentHead,
       commits: readCommits(

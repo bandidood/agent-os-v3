@@ -153,7 +153,7 @@ export function SystemMetricsFooter({ leftOffsetPx = 0 }: { leftOffsetPx?: numbe
             <Separator />
             <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
               <StatusDot tone={hermesDotTone} />
-              <MetricItem label="Hermes" value={data.hermes.status} tone={hermesTone} />
+              <MetricItem label="Agent" value={data.hermes.status} tone={hermesTone} />
             </span>
             <Separator />
             <MetricItem

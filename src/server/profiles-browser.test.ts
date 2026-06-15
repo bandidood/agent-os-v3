@@ -9,7 +9,7 @@ describe('listProfiles', () => {
   let tempHome: string
 
   beforeEach(() => {
-    tempHome = fs.mkdtempSync(path.join(os.tmpdir(), 'hermes-workspace-profiles-'))
+    tempHome = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-os-v3-profiles-'))
     vi.spyOn(os, 'homedir').mockReturnValue(tempHome)
     delete process.env.HERMES_HOME
     delete process.env.CLAUDE_HOME

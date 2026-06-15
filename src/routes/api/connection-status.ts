@@ -1,6 +1,6 @@
 /**
  * Connection status endpoint — returns a summary of portable chat readiness
- * plus whether Hermes Agent gateway enhancements are available.
+ * plus whether AI Agent gateway enhancements are available.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -84,11 +84,11 @@ export const Route = createFileRoute('/api/connection-status')({
           label = 'Enhanced'
           detail = modelConfigured
             ? caps.dashboard.available
-              ? 'Core chat works and the Hermes Agent dashboard APIs are available.'
-              : 'Core chat works and Hermes Agent gateway APIs are available.'
+              ? 'Core chat works and the AI Agent dashboard APIs are available.'
+              : 'Core chat works and AI Agent gateway APIs are available.'
             : caps.dashboard.available
-              ? 'Hermes Agent dashboard APIs are available. Choose a model to start chatting.'
-              : 'Hermes Agent gateway APIs are available. Choose a model to start chatting.'
+              ? 'AI Agent dashboard APIs are available. Choose a model to start chatting.'
+              : 'AI Agent gateway APIs are available. Choose a model to start chatting.'
         } else if (chatReady && modelConfigured) {
           status = 'connected'
           label = 'Connected'
@@ -105,7 +105,7 @@ export const Route = createFileRoute('/api/connection-status')({
               'Backend connected. Choose a provider and model to test chat.'
           } else {
             detail =
-              'Core chat works. Enhanced Hermes Agent gateway APIs are optional and unlock automatically when available.'
+              'Core chat works. Enhanced AI Agent gateway APIs are optional and unlock automatically when available.'
           }
         }
 

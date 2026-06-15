@@ -5,7 +5,7 @@ import { CLAUDE_API } from './gateway-capabilities'
 
 /**
  * Optional bearer token for authenticated OpenAI-compatible endpoints
- * (e.g. Codex OAuth, Hermes Agent gateway with API_SERVER_KEY set).
+ * (e.g. Codex OAuth, AI Agent gateway with API_SERVER_KEY set).
  *
  * Read at call time, not module-load time: under vite-node SSR the
  * top-level `process.env` snapshot can be empty when this module is
@@ -134,7 +134,7 @@ export type StreamChunkType =
       name: string
       label: string
       toolCallId?: string
-      // Lifecycle phase from the upstream gateway. Vanilla Hermes Agent
+      // Lifecycle phase from the upstream gateway. Vanilla AI Agent
       // emits 'running' at tool start and 'completed' at tool finish via
       // the `hermes.tool.progress` SSE event (#16588). Older builds that
       // sent `claude.tool.progress` did not carry status — we treat
@@ -290,7 +290,7 @@ export async function openaiChat(
   if (options.sessionId) {
     headers['X-Hermes-Session-Id'] = options.sessionId
     // Back-compat for older/Claude-compatible adapters that still look for
-    // the pre-Hermes header name.  Hermes Agent ignores this alias.
+    // the pre-Hermes header name.  AI Agent ignores this alias.
     headers['X-Claude-Session-Id'] = options.sessionId
   }
 

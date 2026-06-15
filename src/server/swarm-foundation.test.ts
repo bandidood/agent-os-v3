@@ -60,7 +60,7 @@ describe('classifySwarmPluginBoundary', () => {
 
 describe('deriveSwarmBoundary', () => {
   it('marks external cwd values as outside the workspace boundary', () => {
-    const boundary = deriveSwarmBoundary('/opt/other-project', '/Users/aurora/hermes-workspace')
+    const boundary = deriveSwarmBoundary('/opt/other-project', '/Users/aurora/agent-os-v3')
     expect(boundary.insideWorkspace).toBe(false)
     expect(boundary.owner).toBe('external')
     expect(boundary.relativeCwd).toBeNull()

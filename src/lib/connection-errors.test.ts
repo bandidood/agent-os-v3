@@ -35,7 +35,7 @@ describe('classifyConnectionError', () => {
   it('classifies explicit gateway-token rejection as gateway_auth_rejected (issue #239)', () => {
     // The exact wording in the bug report.
     expect(
-      classifyConnectionError('Hermes Agent rejected the connection token'),
+      classifyConnectionError('AI Agent rejected the connection token'),
     ).toBe('gateway_auth_rejected')
     expect(classifyConnectionError('missing gateway auth')).toBe(
       'gateway_auth_rejected',
@@ -140,11 +140,11 @@ describe('getConnectionErrorMessage', () => {
 describe('getConnectionErrorInfo', () => {
   it('combines kind, title, and details', () => {
     const info = getConnectionErrorInfo(
-      'Hermes Agent rejected the connection token',
+      'AI Agent rejected the connection token',
     )
     expect(info.kind).toBe('gateway_auth_rejected')
     expect(info.title.toLowerCase()).toContain('gateway')
-    expect(info.details).toBe('Hermes Agent rejected the connection token')
+    expect(info.details).toBe('AI Agent rejected the connection token')
   })
 
   it('suppresses generic details that duplicate the title', () => {

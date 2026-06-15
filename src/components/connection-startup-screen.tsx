@@ -29,7 +29,7 @@ function getSetupSteps(
       note: 'Portable chat works with any backend that exposes /v1/chat/completions (Ollama, LiteLLM, vLLM, etc.)',
     },
     {
-      title: 'Optional: install Hermes Agent locally',
+      title: 'Optional: install AI Agent locally',
       command:
         'curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash',
       note: 'Vanilla hermes-agent unlocks sessions, skills, memory, jobs, and config automatically — no fork required',
@@ -37,7 +37,7 @@ function getSetupSteps(
     {
       title: 'Set up your agent',
       command: 'hermes setup',
-      note: 'Pick your providers once; Hermes Agent stores them under ~/.hermes',
+      note: 'Pick your providers once; AI Agent stores them under ~/.hermes',
     },
     {
       title: 'Start the gateway',
@@ -113,7 +113,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
           setServerLog([
             String(
               data.message ||
-                'Auto-started Hermes Agent gateway — reconnecting…',
+                'Auto-started AI Agent gateway — reconnecting…',
             ),
           ])
         }
@@ -221,12 +221,12 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
       <div className="flex w-full max-w-lg flex-col items-center text-center">
         <img
           src="/claude-avatar.webp"
-          alt="Hermes Agent"
+          alt="AI Agent"
           className="mb-5 h-20 w-20 rounded-2xl object-cover shadow-[0_12px_40px_rgba(0,0,0,0.45)]"
         />
 
         <h1 className="text-[2rem] font-semibold tracking-tight text-white">
-          Hermes Workspace
+          agent-os
         </h1>
 
         {/* Connecting spinner */}
@@ -255,7 +255,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
               Welcome! Let&apos;s connect your backend
             </p>
             <p className="mt-2 text-sm leading-6 text-white/60">
-              Hermes Workspace works with any OpenAI-compatible backend. Hermes Agent
+              agent-os works with any OpenAI-compatible backend. AI Agent
               gateway APIs unlock enhanced features automatically when they are
               available.
             </p>
@@ -279,7 +279,7 @@ export function ConnectionStartupScreen({ onConnected }: Props) {
                     Detecting...
                   </span>
                 ) : (
-                  'Auto-Start Hermes Agent Gateway'
+                  'Auto-Start AI Agent Gateway'
                 )}
               </button>
 

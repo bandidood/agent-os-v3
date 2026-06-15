@@ -49,7 +49,7 @@ describe('mergeSlashCommands', () => {
     const merged = mergeSlashCommands(DEFAULT_SLASH_COMMANDS, [
       {
         command: '/hermes-agent',
-        description: 'Complete guide to using and extending Hermes Agent',
+        description: 'Complete guide to using and extending AI Agent',
       },
     ])
 

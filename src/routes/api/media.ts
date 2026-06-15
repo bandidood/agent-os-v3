@@ -1,7 +1,7 @@
 /**
  * Authenticated local media endpoint.
  *
- * Hermes Agent can emit MEDIA:<absolute-path> tokens for generated images and
+ * AI Agent can emit MEDIA:<absolute-path> tokens for generated images and
  * other local artifacts. Browsers cannot load those paths directly, so this
  * route serves a constrained set of Workspace/Hermes artifact directories.
  */

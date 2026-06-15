@@ -54,7 +54,7 @@ describe('openaiChat', () => {
   })
 
   it('sends Hermes session continuity headers even without a bearer token', async () => {
-    process.env.HOME = '/tmp/hermes-workspace-test-no-codex-auth'
+    process.env.HOME = '/tmp/agent-os-v3-test-no-codex-auth'
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(
         JSON.stringify({ choices: [{ message: { content: 'ok' } }] }),

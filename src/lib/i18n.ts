@@ -1,5 +1,5 @@
 /**
- * Lightweight i18n — UI string translations for Hermes Workspace.
+ * Lightweight i18n — UI string translations for agent-os.
  * Add new languages by adding a locale map below.
  */
 
@@ -322,7 +322,7 @@ export const LOCALE_LABELS: Record<LocaleId, string> = {
   ar: 'العربية',
 }
 
-const STORAGE_KEY = 'hermes-workspace-locale'
+const STORAGE_KEY = 'agent-os-v3-locale'
 
 export function getLocale(): LocaleId {
   if (typeof window === 'undefined') return 'en'

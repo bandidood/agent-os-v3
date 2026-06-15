@@ -18,7 +18,7 @@ const NARRATION: Record<PlaygroundWorldId, { name: string; lines: string[] }> = 
   training: {
     name: 'Training Grounds',
     lines: [
-      'Welcome to the Training Grounds. This is where every Hermes Agent begins.',
+      'Welcome to the Training Grounds. This is where every AI Agent begins.',
       'Walk to the glowing Arrival Circle. Talk to Athena to accept your first quest.',
       'You will learn five skills: movement, gear, chat, memory, and building.',
       'Press F to toggle focus mode while playing. The arrow at the top of the screen points to your current objective.',

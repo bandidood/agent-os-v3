@@ -350,7 +350,7 @@ function SettingsRoute() {
           {/* -- Connection ------------------ */}
           {activeSection === 'connection' && <ConnectionSection />}
 
-          {/* ── Hermes Agent ──────────────────────────────────── */}
+          {/* ── AI Agent ──────────────────────────────────── */}
           {activeSection === 'claude' && (
             <ClaudeConfigSection activeView="claude" />
           )}
@@ -946,7 +946,7 @@ function ChatDisplaySection() {
           />
         </SettingsRow>
       </SettingsSection>
-      {/* Mobile Navigation removed — not relevant for Hermes Workspace */}
+      {/* Mobile Navigation removed — not relevant for agent-os */}
     </>
   )
 }
@@ -1035,7 +1035,7 @@ function _LoaderStyleSection() {
   )
 }
 
-// ── Hermes Agent Configuration ──────────────────────────────────────
+// ── AI Agent Configuration ──────────────────────────────────────
 
 type ClaudeProvider = {
   id: string
@@ -1379,7 +1379,7 @@ function ClaudeConfigSection({
   if (loading) {
     return (
       <SettingsSection
-        title="Hermes Agent"
+        title="AI Agent"
         description="Loading configuration..."
         icon={Settings02Icon}
       >
@@ -1394,12 +1394,12 @@ function ClaudeConfigSection({
   if (!data) {
     return (
       <SettingsSection
-        title="Hermes Agent"
+        title="AI Agent"
         description="Could not load Hermes configuration."
         icon={Settings02Icon}
       >
         <p className="text-sm" style={{ color: 'var(--theme-muted)' }}>
-          Make sure Hermes Agent is running on localhost:8642
+          Make sure AI Agent is running on localhost:8642
         </p>
       </SettingsSection>
     )
@@ -1560,7 +1560,7 @@ function ClaudeConfigSection({
     <>
       <SettingsSection
         title="Model & Provider"
-        description="Configure the default AI model for Hermes Agent."
+        description="Configure the default AI model for AI Agent."
         icon={SourceCodeSquareIcon}
       >
         <SettingsRow
@@ -1822,7 +1822,7 @@ function ClaudeConfigSection({
 
       <SettingsSection
         title="Memory"
-        description="Configure Hermes Agent memory and user profiles."
+        description="Configure AI Agent memory and user profiles."
         icon={UserIcon}
       >
         <SettingsRow
@@ -2352,7 +2352,7 @@ function ClaudeConfigSection({
 
       <SettingsSection
         title="About"
-        description="Hermes Agent runtime information."
+        description="AI Agent runtime information."
         icon={Notification03Icon}
       >
         <SettingsRow
@@ -2922,7 +2922,7 @@ function ConnectionSection() {
   return (
     <SettingsSection
       title="Connection"
-      description="Point the workspace at your Hermes Agent services. Useful for Tailscale, LAN, or remote-server setups (#101)."
+      description="Point the workspace at your AI Agent services. Useful for Tailscale, LAN, or remote-server setups (#101)."
       icon={Link01Icon}
     >
       <div className="text-xs text-primary-600">

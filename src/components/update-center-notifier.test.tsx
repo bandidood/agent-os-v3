@@ -8,7 +8,7 @@ const { NOTES_SEEN_KEY, storeNotes } = __updateReleaseNotesStorageForTests
 const agentReleaseNotes = [
   {
     product: 'agent' as const,
-    label: 'Hermes Agent',
+    label: 'AI Agent',
     from: 'c23a87bc163b188abc7e40fbdccf07a9739231c3',
     to: '4fdfdf67499c33015ed56e6e5910d8bdc00aa901',
     commits: ['Merge pull request #25045 (4fdfdf674)'],

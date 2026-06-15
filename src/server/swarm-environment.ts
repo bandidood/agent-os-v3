@@ -4,7 +4,7 @@ import { homedir } from 'node:os'
 import { getHermesRoot, getProfilesDir, getLocalBinDir } from './claude-paths'
 
 export const SWARM_CANONICAL_REPO = resolve(process.cwd())
-export const SWARM_MEMORY_ROOT = process.env.HERMES_SWARM_MEMORY_ROOT || join(homedir(), 'hermes-workspace')
+export const SWARM_MEMORY_ROOT = process.env.HERMES_SWARM_MEMORY_ROOT || join(homedir(), 'agent-os-v3')
 export const SWARM_MEMORY_HANDOFFS = join(SWARM_MEMORY_ROOT, 'memory')
 export const SWARM_FORBIDDEN_PATHS: string[] = []
 
@@ -76,7 +76,7 @@ export function getSwarmEnvironment(): SwarmEnvironment {
     forbiddenRoots: SWARM_FORBIDDEN_PATHS,
     notes: [
       'Swarm code, git, build, and tests run only in the canonical repo.',
-      'Do not use the legacy hermes-workspace alias for Swarm work.',
+      'Do not use the legacy agent-os-v3 alias for Swarm work.',
       'Worker profiles live under ~/.hermes/profiles/<workerId> and wrappers under ~/.local/bin/swarmN.',
       'Prefer live tmux-backed Hermes sessions over one-shot subprocesses.',
       'Use the swarm APIs as the machine-readable source of worker/runtime truth.',

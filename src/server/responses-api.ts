@@ -1,8 +1,8 @@
 /**
- * Vanilla Hermes Agent /v1/responses streaming client.
+ * Vanilla AI Agent /v1/responses streaming client.
  *
  * The OpenAI Responses API path (POST /v1/responses + stream:true) is the
- * structured streaming surface the upstream Hermes Agent emits when it
+ * structured streaming surface the upstream AI Agent emits when it
  * wants frontends to render tool calls *during* a run. Unlike the
  * /v1/chat/completions surface, it carries:
  *
@@ -10,7 +10,7 @@
  *   - stable call_id for matching start/done/result
  *   - tool result text (`function_call_output`)
  *
- * That is everything the Hermes Workspace TUI tool card needs to render
+ * That is everything the agent-os TUI tool card needs to render
  * mid-run with INPUT JSON expanded and live duration counters.
  *
  * This module is the thin consumer side. It talks to the gateway, parses

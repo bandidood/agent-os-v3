@@ -199,7 +199,7 @@ export const Route = createFileRoute('/api/swarm-tmux-start')({
         }
 
         // Sync the worker's profile config.yaml model section to the
-        // roster's `model:` label before we (re)attach tmux. Hermes Agent
+        // roster's `model:` label before we (re)attach tmux. AI Agent
         // reads config.yaml on every invocation, and the wrapper does not
         // pass `--model`, so this is the only way the roster value is
         // honored. Best-effort: unrecognised labels (typos, custom

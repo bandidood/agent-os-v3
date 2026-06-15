@@ -3,16 +3,16 @@ import { createRemoteStatus, remoteUrlMatchesExpectedRepo } from './claude-updat
 
 describe('claude update repo gating', () => {
   it('matches Claude workspace repo aliases', () => {
-    expect(remoteUrlMatchesExpectedRepo('https://github.com/example/hermes-workspace.git', ['hermes-workspace'])).toBe(true)
-    expect(remoteUrlMatchesExpectedRepo('git@github.com:outsourc-e/hermes-workspace.git', ['outsourc-e/hermes-workspace'])).toBe(true)
+    expect(remoteUrlMatchesExpectedRepo('https://github.com/example/agent-os-v3.git', ['agent-os-v3'])).toBe(true)
+    expect(remoteUrlMatchesExpectedRepo('git@github.com:outsourc-e/agent-os-v3.git', ['outsourc-e/agent-os-v3'])).toBe(true)
   })
 
   it('blocks update availability for wrong remote repos even when heads differ', () => {
     const status = createRemoteStatus({
       name: 'origin',
-      label: 'Hermes Workspace',
-      expectedRepo: 'hermes-workspace',
-      aliases: ['hermes-workspace'],
+      label: 'agent-os',
+      expectedRepo: 'agent-os-v3',
+      aliases: ['agent-os-v3'],
       url: 'https://github.com/example/not-workspace.git',
       currentHead: 'local',
       remoteHead: 'remote',
@@ -20,13 +20,13 @@ describe('claude update repo gating', () => {
 
     expect(status.repoMatches).toBe(false)
     expect(status.updateAvailable).toBe(false)
-    expect(status.error).toContain('expected hermes-workspace')
+    expect(status.error).toContain('expected agent-os-v3')
   })
 
   it('allows update availability only for the expected repo with a newer remote head', () => {
     const status = createRemoteStatus({
       name: 'upstream',
-      label: 'Hermes Agent',
+      label: 'AI Agent',
       expectedRepo: 'hermes-agent',
       aliases: ['hermes-agent'],
       url: 'https://github.com/NousResearch/hermes-agent.git',
