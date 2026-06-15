@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
-# Hermes Workspace — production Docker image
-# Publishes to ghcr.io/outsourc-e/hermes-workspace
+# agent-os v3 — production Docker image
+# Publishes to ghcr.io/bandidood/agent-os-v3
 #
 # Build locally:
 #   docker build -t hermes-workspace .
@@ -12,11 +12,12 @@
 FROM tianon/gosu:1.17-bookworm AS gosu_source
 # ─── build stage ─────────────────────────────────────────────────────────
 FROM node:22-slim AS build
-RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* \
+    && npm install -g pnpm@9 --quiet
 WORKDIR /app
 
 # Install deps (cache-friendly: copy only manifests first)
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy sources and build
