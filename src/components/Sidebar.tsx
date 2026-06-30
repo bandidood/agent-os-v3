@@ -67,7 +67,12 @@ function sectionOf(href: string): string {
   return "Self";
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [order, setOrder] = useState<string[]>(DEFAULT_ORDER);
@@ -113,9 +118,18 @@ export default function Sidebar() {
   function reset() { setOrder(DEFAULT_ORDER); setHidden([]); }
 
   return (
-    <aside className="hidden md:flex flex-col w-[244px] shrink-0 h-screen overflow-hidden py-6 border-r border-[var(--line-soft)]"
-           style={{ background: "var(--bg-mid)" }}>
-      <Link href="/" className="block mb-7 px-5 shrink-0">
+    <aside
+      className={[
+        "flex flex-col w-[244px] shrink-0 h-screen overflow-hidden py-6 border-r border-[var(--line-soft)]",
+        // Desktop: always visible
+        "md:relative md:translate-x-0 md:z-auto",
+        // Mobile: fixed drawer, slides in from left
+        "fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out",
+        mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+      ].join(" ")}
+      style={{ background: "var(--bg-mid)" }}
+    >
+      <Link href="/" onClick={onMobileClose} className="block mb-7 px-5 shrink-0">
         <div className="text-[10px] uppercase tracking-[0.25em] mb-1" style={{ color: "var(--cream-mute)", fontFamily: "'Manrope', sans-serif", fontWeight: 600 }}>
           Local · Studio
         </div>
@@ -204,6 +218,7 @@ export default function Sidebar() {
               ) : (
                 <Link
                   href={href}
+                  onClick={onMobileClose}
                   className={`sidebar-item relative group flex items-center gap-3 py-2.5 px-5 ${active ? "active" : ""}`}
                 >
                   {active && (
@@ -249,27 +264,3 @@ export default function Sidebar() {
   );
 }
 
-export function MobileNav() {
-  const pathname = usePathname();
-  const items = NAV.filter((_, i) => i !== 5 && i !== 6); // hide goals/journal/memory on mobile bar for space
-  return (
-    <nav className="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-40 panel panel-hot px-2 py-1.5 flex gap-1">
-      {items.map((item) => {
-        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="grid place-items-center w-10 h-10 rounded-lg transition"
-            style={{
-              background: active ? item.dim : "transparent",
-              color: active ? item.accent : "var(--fg-dim)",
-            }}
-          >
-            {item.icon}
-          </Link>
-        );
-      })}
-    </nav>
-  );
-}
