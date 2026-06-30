@@ -14,13 +14,14 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - AGENTIC_OS_LOCATION=Cloud
-      # NextAuth — REQUIRED
-      - AUTH_SECRET=${AGENTIC_OS_AUTH_SECRET:?AUTH_SECRET not set}
+      # NextAuth — set AUTH_SECRET to a random 32+ char string (required)
+      - AUTH_SECRET=${AGENTIC_OS_AUTH_SECRET:-}
       - AUTH_TRUST_HOST=true
-      - NEXTAUTH_URL=${SERVICE_FQDN_AGENT_OS:-https://agent-os-v3.ccdigital.fr}
-      - AGENTIC_OS_ADMIN_EMAIL=${AGENTIC_OS_ADMIN_EMAIL:-admin@agent-os.local}
+      - NEXTAUTH_URL=${SERVICE_FQDN_AGENT_OS:-}
+      # Admin account — leave BOTH empty to trigger the /setup onboarding wizard
+      - AGENTIC_OS_ADMIN_EMAIL=${AGENTIC_OS_ADMIN_EMAIL:-}
       - AGENTIC_OS_ADMIN_PASSWORD_HASH=${AGENTIC_OS_ADMIN_PASSWORD_HASH:-}
-      # API keys
+      # API keys — set via Coolify environment variables
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
