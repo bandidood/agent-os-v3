@@ -464,6 +464,10 @@ blockquote cite {
 .scroll::-webkit-scrollbar-thumb:hover { background: rgba(212, 165, 116, 0.32); }
 .scroll::-webkit-scrollbar-track { background: transparent; }
 
+/* Sidebar scroll — hidden scrollbar */
+.sidebar-scroll { scrollbar-width: none; }
+.sidebar-scroll::-webkit-scrollbar { display: none; }
+
 /* Agent glow utility — keeps existing class names alive */
 .glow-c { color: var(--rust);     text-shadow: 0 0 18px rgba(201, 124, 94, 0.5); }
 .glow-o { color: var(--plum);     text-shadow: 0 0 18px rgba(196, 96, 126, 0.5); }
