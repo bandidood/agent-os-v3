@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu } from "lucide-react";
 import CommandPalette from "./CommandPalette";
 
 interface PageMeta { numeral: string; label: string; title: string; sub: string; }
@@ -43,7 +42,7 @@ const TITLES: Record<string, PageMeta> = {
   "/guide":       { numeral: "XVI.",  label: "Build · Your Own",   title: "Build Your Own",          sub: "Step-by-step guide. Anyone can follow it. Share with your community." },
 };
 
-export default function TopBar({ onMenuOpen }: { onMenuOpen?: () => void }) {
+export default function TopBar() {
   const pathname = usePathname();
   const t = TITLES[pathname] ?? TITLES["/"];
   const [time, setTime] = useState<string>("");
@@ -83,15 +82,6 @@ export default function TopBar({ onMenuOpen }: { onMenuOpen?: () => void }) {
       </motion.div>
 
       <div className="flex items-center gap-3 pt-2 shrink-0">
-        {/* Burger — mobile only */}
-        <button
-          onClick={onMenuOpen}
-          className="md:hidden grid place-items-center w-9 h-9 rounded-lg border border-[var(--line-soft)] transition hover:bg-[rgba(243,235,218,0.05)]"
-          style={{ color: "var(--cream-dim)" }}
-          aria-label="Open menu"
-        >
-          <Menu size={18} />
-        </button>
         <CommandPalette />
         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border border-[var(--line-soft)] text-[11px]"
              style={{ color: "var(--cream-dim)", background: "rgba(243,235,218,0.02)" }}>
