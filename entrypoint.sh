@@ -1,0 +1,212 @@
+#!/bin/sh
+# Agent OS — start immediately, install+start agents async in background
+set -e
+
+export NPM_CONFIG_PREFIX="/root/.npm-global"
+export PATH="/root/.npm-global/bin:/root/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+# Gateway ports (configurable via env)
+export OPENCLAW_GATEWAY_PORT="${OPENCLAW_GATEWAY_PORT:-8989}"
+export OLLAMA_HOST="${OLLAMA_HOST:-0.0.0.0}"
+export OLLAMA_PORT="${OLLAMA_PORT:-11434}"
+
+# Virtual display for Chromium (nlm login, Puppeteer, etc.)
+export DISPLAY="${DISPLAY:-:99}"
+if [ -z "$DISABLE_XVFB" ]; then
+  Xvfb :99 -screen 0 1280x720x24 -ac 2>/dev/null &
+  echo "=== Xvfb virtual display on :99 ==="
+fi
+
+echo "=== Agent OS ==="
+
+mkdir -p /root/.agentic-os/vault /root/.openclaw /root/.claude /root/.local/share/hermes /root/.hermes
+
+# ---- Bootstrap Hermes config + skills ----
+if [ -f /app/hermes-bootstrap.sh ]; then
+  sh /app/hermes-bootstrap.sh
+fi
+
+# Skills: copy from image on first boot (preserved via volume on redeploy)
+if [ -d /app/hermes-config/skills ] && [ ! -f /root/.hermes/skills/.skills-copied ]; then
+  echo "[hermes-bootstrap] 📚 Copying skills from image..."
+  mkdir -p /root/.hermes/skills
+  cp -r /app/hermes-config/skills/* /root/.hermes/skills/ 2>/dev/null || true
+  cp -r /app/hermes-config/skills/.* /root/.hermes/skills/ 2>/dev/null || true
+  touch /root/.hermes/skills/.skills-copied
+  SKILL_COUNT=$(find /root/.hermes/skills -name "SKILL.md" 2>/dev/null | wc -l)
+  echo "[hermes-bootstrap] ✅ $SKILL_COUNT skills copied"
+fi
+
+# --- Async agent installer + gateway starter ---
+install_and_start_agents() {
+  echo "[agent-installer] Starting background install + gateway startup..."
+
+  # ---- Install agents if missing ----
+
+  # 1) Claude Code
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing Claude Code..."
+    npm install -g @anthropic-ai/claude-code 2>&1 | tail -3
+  else
+    echo "[agent-installer] ✅ Claude Code: $(claude --version 2>/dev/null || echo 'ok')"
+  fi
+
+  # 2) Hermes — pip pre-installed in Dockerfile, --break-system-packages for PEP 668
+  if ! command -v hermes >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing Hermes..."
+    npm install -g hermes-agent 2>&1 | tail -5
+    if ! command -v hermes >/dev/null 2>&1; then
+      echo "[agent-installer] ⚠️  npm install failed, trying pip directly..."
+      pip3 install --break-system-packages hermes-agent 2>&1 | tail -5 || {
+        pip3 install hermes-agent 2>&1 | tail -5 || echo "[agent-installer] ⚠️  Hermes install failed"
+      }
+    fi
+    if command -v hermes >/dev/null 2>&1; then
+      echo "[agent-installer] ✅ Hermes installed"
+    else
+      echo "[agent-installer] ⚠️  Hermes not available"
+    fi
+  else
+    echo "[agent-installer] ✅ Hermes already present"
+  fi
+
+  # 3) OpenClaw
+  if ! command -v openclaw >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing OpenClaw..."
+    npm install -g openclaw@latest 2>&1 | tail -3
+  else
+    echo "[agent-installer] ✅ OpenClaw already present"
+  fi
+
+  # 4) Antigravity (agy)
+  if ! command -v agy >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing Antigravity CLI..."
+    curl -fsSL https://antigravity.google/cli/install.sh | bash 2>&1 | tail -5 || echo "[agent-installer] ⚠️  Antigravity install skipped"
+  else
+    echo "[agent-installer] ✅ Antigravity already present"
+  fi
+
+  # 6) Codex
+  if ! command -v codex >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing Codex CLI..."
+    npm install -g @openai/codex 2>&1 | tail -3 || echo "[agent-installer] ⚠️  Codex install skipped"
+  else
+    echo "[agent-installer] ✅ Codex already present"
+  fi
+
+  # 7) Ollama — local LLM server
+  if ! command -v ollama >/dev/null 2>&1; then
+    echo "[agent-installer] 📦 Installing Ollama..."
+    curl -fsSL https://ollama.com/install.sh | sh 2>&1 | tail -5
+    if command -v ollama >/dev/null 2>&1; then
+      echo "[agent-installer] ✅ Ollama installed"
+    else
+      echo "[agent-installer] ⚠️  Ollama install failed"
+    fi
+  else
+    echo "[agent-installer] ✅ Ollama already present"
+  fi
+
+  # ---- Configure API keys (non-interactive auth) ----
+
+  if [ -n "$ANTHROPIC_API_KEY" ] && command -v claude >/dev/null 2>&1; then
+    echo "[agent-installer] 🔑 Configuring Claude Code with ANTHROPIC_API_KEY"
+    mkdir -p /root/.claude
+    printf '{"apiKey":"%s"}\n' "$ANTHROPIC_API_KEY" > /root/.claude/api-key.json 2>/dev/null || true
+  fi
+
+  # ---- Start gateways in background ----
+
+  # Ollama — local LLM server (must start before model pulls)
+  if command -v ollama >/dev/null 2>&1; then
+    echo "[gateway] 🚀 Starting Ollama server on port $OLLAMA_PORT..."
+    OLLAMA_HOST="$OLLAMA_HOST:$OLLAMA_PORT" nohup ollama serve >/root/.ollama/server.log 2>&1 &
+    OLLAMA_PID=$!
+    sleep 3
+    if kill -0 $OLLAMA_PID 2>/dev/null; then
+      echo "[gateway] ✅ Ollama server running (PID $OLLAMA_PID, port $OLLAMA_PORT)"
+      if [ -n "$OLLAMA_PULL_MODELS" ]; then
+        for model in $(echo "$OLLAMA_PULL_MODELS" | tr ',' ' '); do
+          echo "[gateway] 📥 Pulling Ollama model: $model..."
+          ollama pull "$model" 2>&1 | tail -3
+        done
+      fi
+    else
+      echo "[gateway] ⚠️  Ollama server failed — check /root/.ollama/server.log"
+      cat /root/.ollama/server.log 2>/dev/null | tail -10
+    fi
+  else
+    echo "[gateway] ⚠️  Ollama not installed, skipping"
+  fi
+
+  # OpenClaw gateway
+  if command -v openclaw >/dev/null 2>&1; then
+    echo "[gateway] 🚀 Starting OpenClaw gateway..."
+    if [ ! -f /root/.openclaw/config.json ]; then
+      echo "[gateway] Writing minimal OpenClaw config..."
+      mkdir -p /root/.openclaw
+      printf '{"gateway":{"mode":"local","port":%s}}\n' "$OPENCLAW_GATEWAY_PORT" > /root/.openclaw/config.json
+    fi
+    nohup openclaw gateway run --port "$OPENCLAW_GATEWAY_PORT" --allow-unconfigured >/root/.openclaw/gateway.log 2>&1 &
+    GW_PID=$!
+    sleep 5
+    if kill -0 $GW_PID 2>/dev/null; then
+      echo "[gateway] ✅ OpenClaw gateway running (PID $GW_PID, port $OPENCLAW_GATEWAY_PORT)"
+    else
+      echo "[gateway] ⚠️  OpenClaw gateway failed — check /root/.openclaw/gateway.log"
+      cat /root/.openclaw/gateway.log 2>/dev/null | tail -10
+    fi
+  else
+    echo "[gateway] ⚠️  OpenClaw not installed, skipping gateway"
+  fi
+
+  # Hermes — no persistent gateway needed (oneshot CLI mode)
+  if command -v hermes >/dev/null 2>&1; then
+    echo "[hermes] ✅ Hermes CLI available (oneshot mode per request)"
+  fi
+
+  # ---- Final summary ----
+  echo ""
+  echo "[agent-installer] === Installed agents ==="
+  for cmd in claude hermes openclaw agy codex ollama; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+      echo "  ✅ $cmd: $(command -v "$cmd")"
+    else
+      echo "  ❌ $cmd: not found"
+    fi
+  done
+  echo ""
+  echo "[agent-installer] === Running gateways ==="
+  for proc in "ollama" "openclaw"; do
+    pid=$(pgrep -f "$proc" 2>/dev/null | head -1)
+    if [ -n "$pid" ]; then
+      echo "  ✅ $proc (PID $pid)"
+    else
+      echo "  ❌ $proc: not running"
+    fi
+  done
+  echo ""
+  echo "[agent-installer] === Ollama models ==="
+  if command -v ollama >/dev/null 2>&1; then
+    ollama list 2>/dev/null | while IFS= read -r line; do echo "  $line"; done || echo "  (none)"
+  else
+    echo "  (ollama not installed)"
+  fi
+  echo ""
+  echo "[agent-installer] === Hermes config ==="
+  if [ -f /root/.hermes/config.yaml ]; then
+    echo "  ✅ config.yaml present"
+  else
+    echo "  ❌ config.yaml missing — set HERMES_CONFIG_B64 or mount volume"
+  fi
+  SKILL_COUNT=$(find /root/.hermes/skills -name "SKILL.md" 2>/dev/null | wc -l)
+  echo "  📚 $SKILL_COUNT skills loaded"
+  echo "[agent-installer] === Done ==="
+}
+
+# Start install + gateways in background (non-blocking)
+install_and_start_agents &
+
+# --- Start Next.js immediately ---
+echo "=== Starting Agent OS ==="
+exec node server.js

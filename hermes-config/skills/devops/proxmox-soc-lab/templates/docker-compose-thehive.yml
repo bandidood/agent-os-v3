@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: thehive-cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TheHive5
+      - CASSANDRA_LISTEN_ADDRESS=cassandra
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=100M
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    ports:
+      - "9042:9042"
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: thehive-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    restart: unless-stopped
+
+  cortex:
+    image: thehiveproject/cortex:4.0.1-1
+    container_name: thehive-cortex
+    depends_on:
+      - elasticsearch
+    environment:
+      - es_hostname=elasticsearch
+    # auth.provider = ["key", "local"] — key is loaded but Bearer auth is BROKEN
+    # (MultiAuthSrv bug: LocalAuthSrv intercepts Bearer tokens, KeyAuthSrv never reached)
+    # All auth must use session cookie (CSRF flow) or Basic auth
+    volumes:
+      - /opt/cortex4/conf/application.conf:/etc/cortex/application.conf:ro
+      - cortex-data:/var/lib/cortex
+    ports:
+      - "9001:9001"
+    restart: unless-stopped
+
+  thehive:
+    image: strangebee/thehive:5.7.2-1
+    container_name: thehive5
+    depends_on:
+      - cassandra
+      - cortex
+    # IMPORTANT: Do NOT use TH_CORTEX_KEYS — Bearer auth is broken in Cortex 4.
+    # Use --no-config-cortex + --cortex-hosts with Basic auth credentials instead.
+    # OR mount a custom application.conf with cortex { type = "basic" } block.
+    # TheHive 5 first-time setup requires WEB UI (no API for initial org/admin creation).
+    volumes:
+      - /opt/thehive5/conf/application.conf:/etc/thehive/application.conf:ro
+      - thehive-data:/data
+      - thehive-logs:/opt/thehive/logs
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+volumes:
+  cassandra-data:
+  es-data:
+  cortex-data:
+  thehive-data:
+  thehive-logs:
