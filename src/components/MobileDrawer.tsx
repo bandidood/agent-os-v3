@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import type { ReactNode } from "react";
 
 interface NavItem {
@@ -113,6 +114,31 @@ export default function MobileDrawer({ items }: { items: NavItem[] }) {
             );
           })}
         </nav>
+
+        {/* Settings + Logout */}
+        <div className="mt-2 mx-2 pt-3 flex flex-col gap-0.5" style={{ borderTop: "1px solid rgba(243,235,218,0.08)" }}>
+          <Link
+            href="/settings"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-2.5 px-3 rounded-lg transition hover:bg-white/[0.03]"
+            style={{ color: "var(--cream-dim)" }}
+          >
+            <span className="shrink-0 grid place-items-center w-7 h-7 rounded-md">
+              <Settings size={16} />
+            </span>
+            <span className="text-sm">Settings</span>
+          </Link>
+          <button
+            onClick={() => { setOpen(false); signOut({ callbackUrl: "/login" }); }}
+            className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition hover:bg-red-500/10 text-left"
+            style={{ color: "var(--cream-dim)" }}
+          >
+            <span className="shrink-0 grid place-items-center w-7 h-7 rounded-md">
+              <LogOut size={16} />
+            </span>
+            <span className="text-sm">Logout</span>
+          </button>
+        </div>
       </div>
     </>
   );

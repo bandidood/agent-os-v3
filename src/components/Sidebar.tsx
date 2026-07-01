@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutGrid, Brain, Sparkles as SparklesIcon, TrendingUp, Columns3, NotebookText, Film, Building2, Workflow, MessagesSquare, Image as ImageIcon, Gamepad2, Music2, Network, Clapperboard, Repeat, Cpu, LayoutDashboard, Palette, GripVertical, Eye, EyeOff, SlidersHorizontal, Check } from "lucide-react";
+import { LayoutGrid, Brain, Sparkles as SparklesIcon, TrendingUp, Columns3, NotebookText, Film, Building2, Workflow, MessagesSquare, Image as ImageIcon, Gamepad2, Music2, Network, Clapperboard, Repeat, Cpu, LayoutDashboard, Palette, GripVertical, Eye, EyeOff, SlidersHorizontal, Check, Settings, LogOut } from "lucide-react";
 import { useState, useEffect, type ReactNode } from "react";
+import { signOut } from "next-auth/react";
 import AgentAvatar from "./AgentAvatar";
 
 interface NavItem {
@@ -238,12 +239,27 @@ export default function Sidebar() {
       </nav>
       </div>
 
-      <div className="shrink-0 pt-6 mx-5 border-t border-[var(--line-soft)]">
-        <div className="sidebar-section-label mt-4 mb-2">Wired</div>
-        <div className="text-[11px] leading-relaxed mono" style={{ color: "var(--cream-dim)" }}>
-          claude · openclaw · hermes<br />
-          <span className="hand text-[1.15em]">+</span> Obsidian vault
-        </div>
+      <div className="shrink-0 pt-4 mx-2 border-t border-[var(--line-soft)] flex flex-col gap-0.5">
+        <Link
+          href="/settings"
+          className="flex items-center gap-3 py-2.5 px-3 rounded-lg transition hover:bg-[rgba(212,165,116,0.06)] sidebar-item"
+          style={{ color: "var(--cream-dim)" }}
+        >
+          <span className="shrink-0 grid place-items-center w-7 h-7 rounded-md">
+            <Settings size={16} />
+          </span>
+          <span className="text-sm">Settings</span>
+        </Link>
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg transition hover:bg-red-500/10 text-left"
+          style={{ color: "var(--cream-dim)" }}
+        >
+          <span className="shrink-0 grid place-items-center w-7 h-7 rounded-md">
+            <LogOut size={16} />
+          </span>
+          <span className="text-sm">Logout</span>
+        </button>
       </div>
     </aside>
   );

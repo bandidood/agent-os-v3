@@ -1,13 +1,20 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
+function LoginFormInner({ callbackUrl }: { callbackUrl?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState("");
+  const params = useSearchParams();
+
+  useEffect(() => {
+    if (params?.get("setup") === "done") setNotice("Account created — sign in below.");
+  }, [params]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +29,7 @@ export default function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError("Invalid email or password.");
       setLoading(false);
     } else if (result?.url) {
       window.location.href = result.url;
@@ -30,58 +37,82 @@ export default function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
   };
 
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-[#1a0a2e] via-[#16213e] to-[#0f3460] px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-[var(--bg)]">
       <div className="w-full max-w-sm">
+        {/* Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white tracking-tight">
+          <div className="text-4xl mb-3">🤖</div>
+          <h1 className="text-2xl font-bold text-[var(--fg)]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
             Agentic OS
           </h1>
-          <p className="text-sm text-gray-400 mt-2">Mission Control</p>
+          <p className="text-[var(--fg-dim)] text-sm mt-1.5">Mission Control</p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 sm:p-8 space-y-5"
-        >
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-2 rounded-lg">
-              {error}
-            </div>
-          )}
+        {notice && (
+          <p className="text-sm text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 rounded-lg px-3 py-2 mb-4 text-center">
+            {notice}
+          </p>
+        )}
 
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-300 mb-1.5">Email</label>
+            <label className="block text-xs font-medium text-[var(--fg-dim)] mb-1.5 uppercase tracking-wide">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-colors"
+              autoComplete="email"
               placeholder="admin@example.com"
+              className="w-full px-4 py-3 rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--fg)] placeholder:text-[var(--fg-dimmer)] focus:outline-none focus:border-[var(--accent)] transition text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1.5">Password</label>
+            <label className="block text-xs font-medium text-[var(--fg-dim)] mb-1.5 uppercase tracking-wide">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-colors"
+              autoComplete="current-password"
               placeholder="••••••••"
+              className="w-full px-4 py-3 rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--fg)] placeholder:text-[var(--fg-dimmer)] focus:outline-none focus:border-[var(--accent)] transition text-sm"
             />
           </div>
+
+          {error && (
+            <p className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            className="w-full py-3 rounded-xl font-semibold text-sm transition disabled:opacity-50"
+            style={{ background: "var(--accent)", color: "#fff" }}
           >
-            {loading ? "Signing in..." : "Sign in"}
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+
+        <p className="text-center text-xs text-[var(--fg-dimmer)] mt-6">
+          Credentials are stored locally — only you have access.
+        </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
+  return (
+    <Suspense>
+      <LoginFormInner callbackUrl={callbackUrl} />
+    </Suspense>
   );
 }
