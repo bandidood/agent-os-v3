@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { run } from "@/lib/runner";
+import { config } from "@/lib/config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,6 +51,15 @@ export async function POST(req: Request) {
   // Optional profile = chat as a specific Hermes employee (seo-writer, etc.).
   if (profile !== undefined && (typeof profile !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(profile))) {
     return NextResponse.json({ error: "bad profile" }, { status: 400 });
+  }
+
+  // Pre-check: if hermes binary is not installed yet, return a clean error
+  // instead of letting the spawn produce a confusing empty response.
+  if (!config.hermes) {
+    return NextResponse.json(
+      { ok: false, text: "Hermes is not installed yet. Wait for the background install to finish, then try again.", empty: true, durationMs: 0, exitCode: -1, timedOut: false, stderr: "" },
+      { status: 503 },
+    );
   }
 
   // hermes -z PROMPT  — single-query non-interactive mode.
