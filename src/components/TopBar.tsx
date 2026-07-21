@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CommandPalette from "./CommandPalette";
+import HeaderTerminal from "./HeaderTerminal";
 
 interface PageMeta { numeral: string; label: string; title: string; sub: string; }
 
@@ -83,6 +84,7 @@ export default function TopBar() {
 
       <div className="flex items-center gap-3 pt-2 shrink-0">
         <CommandPalette />
+        <HeaderTerminal />
         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border border-[var(--line-soft)] text-[11px]"
              style={{ color: "var(--cream-dim)", background: "rgba(243,235,218,0.02)" }}>
           <span className="inline-flex">
