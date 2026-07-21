@@ -139,21 +139,35 @@ install_and_start_agents() {
     echo "[gateway] ⚠️  Ollama not installed, skipping"
   fi
 
-  # OpenClaw gateway
+  # OpenClaw gateway — supervised directly by this script (no systemd:
+  # containers have no systemd/dbus session, so `openclaw` must never be
+  # asked to install/enable itself as a systemd --user service; we just
+  # run the gateway binary and keep it alive ourselves).
   if command -v openclaw >/dev/null 2>&1; then
-    echo "[gateway] 🚀 Starting OpenClaw gateway..."
+    echo "[gateway] 🚀 Starting OpenClaw gateway (supervised, no systemd)..."
     if [ ! -f /root/.openclaw/config.json ]; then
       echo "[gateway] Writing minimal OpenClaw config..."
       mkdir -p /root/.openclaw
       printf '{"gateway":{"mode":"local","port":%s}}\n' "$OPENCLAW_GATEWAY_PORT" > /root/.openclaw/config.json
     fi
-    nohup openclaw gateway run --port "$OPENCLAW_GATEWAY_PORT" --allow-unconfigured >/root/.openclaw/gateway.log 2>&1 &
+
+    openclaw_gateway_watchdog() {
+      export OPENCLAW_DISABLE_SYSTEMD=1
+      while true; do
+        echo "[gateway] (re)starting openclaw gateway on port $OPENCLAW_GATEWAY_PORT" >> /root/.openclaw/gateway.log
+        openclaw gateway run --port "$OPENCLAW_GATEWAY_PORT" --allow-unconfigured >>/root/.openclaw/gateway.log 2>&1
+        echo "[gateway] openclaw gateway exited (code $?), restarting in 5s..." >> /root/.openclaw/gateway.log
+        sleep 5
+      done
+    }
+    openclaw_gateway_watchdog &
     GW_PID=$!
+    echo $GW_PID > /root/.openclaw/gateway.watchdog.pid
     sleep 5
     if kill -0 $GW_PID 2>/dev/null; then
-      echo "[gateway] ✅ OpenClaw gateway running (PID $GW_PID, port $OPENCLAW_GATEWAY_PORT)"
+      echo "[gateway] ✅ OpenClaw gateway watchdog running (PID $GW_PID, port $OPENCLAW_GATEWAY_PORT)"
     else
-      echo "[gateway] ⚠️  OpenClaw gateway failed — check /root/.openclaw/gateway.log"
+      echo "[gateway] ⚠️  OpenClaw gateway watchdog failed to start — check /root/.openclaw/gateway.log"
       cat /root/.openclaw/gateway.log 2>/dev/null | tail -10
     fi
   else

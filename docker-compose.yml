@@ -47,6 +47,7 @@ services:
       - agent-npm-prefix:/root/.npm-global
       - agent-npm-cache:/root/.npm
       - agent-uv-local:/root/.local
+      - agent-openclaw:/root/.openclaw
     labels:
       # Explicit service port so Traefik always routes to 3000
       - "traefik.http.services.agent-os-v3-svc.loadbalancer.server.port=3000"
@@ -66,6 +67,7 @@ volumes:
   agent-npm-prefix:
   agent-npm-cache:
   agent-uv-local:
+  agent-openclaw:
 
 networks:
   hermes-agent-net:
