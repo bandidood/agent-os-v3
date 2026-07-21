@@ -96,7 +96,7 @@ export default function HeaderTerminal() {
             animate={{ height: "50vh", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 30 }}
-            className="fixed top-0 left-0 right-0 z-[60] overflow-hidden border-b border-[var(--line-soft)] bg-[var(--bg-dark)] shadow-2xl"
+            className="fixed top-0 left-0 right-0 z-[60] overflow-hidden border-b border-[var(--line-soft)] bg-[var(--bg-deep)] shadow-2xl"
           >
             <div className="h-full flex flex-col p-4 gap-3">
               <div className="flex items-center justify-between shrink-0">
@@ -115,7 +115,7 @@ export default function HeaderTerminal() {
 
               <div
                 ref={scrollRef}
-                className="flex-1 min-h-0 rounded-xl border border-[var(--line-soft)] bg-[var(--bg-mid)] overflow-y-auto"
+                className="flex-1 min-h-0 rounded-xl border border-[var(--line-soft)] bg-[var(--bg-card)] overflow-y-auto"
                 style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}
               >
                 <div className="p-4 text-sm leading-relaxed">
@@ -159,7 +159,7 @@ export default function HeaderTerminal() {
                     onKeyDown={handleKey}
                     placeholder="Enter command…"
                     disabled={loading}
-                    className="w-full pl-8 pr-3 py-2.5 rounded-lg border border-[var(--line-soft)] bg-[var(--bg-dark)] text-[var(--cream)] text-sm font-mono placeholder:text-[var(--cream-dim)] focus:outline-none focus:border-[var(--gold)] transition disabled:opacity-50"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-lg border border-[var(--line-soft)] bg-[var(--bg-elev)] text-[var(--cream)] text-sm font-mono placeholder:text-[var(--cream-dim)] focus:outline-none focus:border-[var(--gold)] transition disabled:opacity-50"
                   />
                 </div>
                 <button
