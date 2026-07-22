@@ -5,6 +5,15 @@ set -e
 export NPM_CONFIG_PREFIX="/root/.npm-global"
 export PATH="/root/.npm-global/bin:/root/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 
+# The whole container runs as root (no unprivileged user set up), and
+# Claude Code's CLI refuses --dangerously-skip-permissions under root/sudo
+# unless it believes it's in a sandbox. OpenClaw's claude-cli backend (and
+# our own /api/run, /api/claude routes) rely on that flag, so without this
+# every Claude-backed chat call fails with:
+#   FailoverError: --dangerously-skip-permissions cannot be used with
+#   root/sudo privileges for security reasons
+export IS_SANDBOX="${IS_SANDBOX:-1}"
+
 # Gateway ports (configurable via env)
 export OPENCLAW_GATEWAY_PORT="${OPENCLAW_GATEWAY_PORT:-8989}"
 export OLLAMA_HOST="${OLLAMA_HOST:-0.0.0.0}"
