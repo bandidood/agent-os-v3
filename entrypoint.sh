@@ -151,11 +151,25 @@ install_and_start_agents() {
       printf '{"gateway":{"mode":"local","port":%s}}\n' "$OPENCLAW_GATEWAY_PORT" > /root/.openclaw/config.json
     fi
 
+    # OpenClaw 2026.7+ refuses to bind 0.0.0.0 (container default) without
+    # auth. Use OPENCLAW_GATEWAY_TOKEN if the operator set one, else
+    # generate + persist one on the volume so it survives redeploys.
+    if [ -z "$OPENCLAW_GATEWAY_TOKEN" ]; then
+      if [ -f /root/.openclaw/gateway.token ]; then
+        OPENCLAW_GATEWAY_TOKEN=$(cat /root/.openclaw/gateway.token)
+      else
+        OPENCLAW_GATEWAY_TOKEN=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
+        printf '%s' "$OPENCLAW_GATEWAY_TOKEN" > /root/.openclaw/gateway.token
+        echo "[gateway] 🔑 Generated new OpenClaw gateway token, saved to /root/.openclaw/gateway.token"
+      fi
+    fi
+    export OPENCLAW_GATEWAY_TOKEN
+
     openclaw_gateway_watchdog() {
       export OPENCLAW_DISABLE_SYSTEMD=1
       while true; do
         echo "[gateway] (re)starting openclaw gateway on port $OPENCLAW_GATEWAY_PORT" >> /root/.openclaw/gateway.log
-        openclaw gateway run --port "$OPENCLAW_GATEWAY_PORT" --allow-unconfigured >>/root/.openclaw/gateway.log 2>&1
+        openclaw gateway run --port "$OPENCLAW_GATEWAY_PORT" --allow-unconfigured --auth token --token "$OPENCLAW_GATEWAY_TOKEN" >>/root/.openclaw/gateway.log 2>&1
         echo "[gateway] openclaw gateway exited (code $?), restarting in 5s..." >> /root/.openclaw/gateway.log
         sleep 5
       done
