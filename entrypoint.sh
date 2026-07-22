@@ -21,6 +21,39 @@ echo "=== Agent OS ==="
 
 mkdir -p /root/.agentic-os/vault /root/.openclaw /root/.claude /root/.local/share/hermes /root/.hermes
 
+# ---- Resolve OpenClaw gateway token (once, at top level) ----
+# Must happen before `exec node server.js` below, and before the async
+# installer forks, so BOTH the supervised gateway process AND any
+# `openclaw health`/CLI subprocess spawned later by the Next.js server
+# (e.g. src/app/api/vitals) inherit the exact same token.
+#
+# Source of truth: if the OpenClaw setup wizard already wrote
+# /root/.openclaw/openclaw.json with a gateway.auth.token, that's the
+# canonical token the CLI reads by default — reuse it instead of
+# minting our own (a mismatched token was the actual cause of the
+# "unauthorized / token_mismatch" loop seen in gateway.log). Otherwise
+# fall back to a persisted generated token.
+if [ -z "$OPENCLAW_GATEWAY_TOKEN" ]; then
+  if [ -f /root/.openclaw/openclaw.json ] && command -v node >/dev/null 2>&1; then
+    OPENCLAW_GATEWAY_TOKEN=$(node -e '
+      try {
+        const c = require("/root/.openclaw/openclaw.json");
+        const t = c && c.gateway && c.gateway.auth && c.gateway.auth.token;
+        if (t) process.stdout.write(t);
+      } catch (e) {}
+    ' 2>/dev/null)
+  fi
+  if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
+    printf '%s' "$OPENCLAW_GATEWAY_TOKEN" > /root/.openclaw/gateway.token
+  elif [ -f /root/.openclaw/gateway.token ]; then
+    OPENCLAW_GATEWAY_TOKEN=$(cat /root/.openclaw/gateway.token)
+  else
+    OPENCLAW_GATEWAY_TOKEN=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
+    printf '%s' "$OPENCLAW_GATEWAY_TOKEN" > /root/.openclaw/gateway.token
+  fi
+fi
+export OPENCLAW_GATEWAY_TOKEN
+
 # ---- Bootstrap Hermes config + skills ----
 if [ -f /app/hermes-bootstrap.sh ]; then
   sh /app/hermes-bootstrap.sh
@@ -151,20 +184,10 @@ install_and_start_agents() {
       printf '{"gateway":{"mode":"local","port":%s}}\n' "$OPENCLAW_GATEWAY_PORT" > /root/.openclaw/config.json
     fi
 
-    # OpenClaw 2026.7+ refuses to bind 0.0.0.0 (container default) without
-    # auth. Use OPENCLAW_GATEWAY_TOKEN if the operator set one, else
-    # generate + persist one on the volume so it survives redeploys.
-    if [ -z "$OPENCLAW_GATEWAY_TOKEN" ]; then
-      if [ -f /root/.openclaw/gateway.token ]; then
-        OPENCLAW_GATEWAY_TOKEN=$(cat /root/.openclaw/gateway.token)
-      else
-        OPENCLAW_GATEWAY_TOKEN=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
-        printf '%s' "$OPENCLAW_GATEWAY_TOKEN" > /root/.openclaw/gateway.token
-        echo "[gateway] 🔑 Generated new OpenClaw gateway token, saved to /root/.openclaw/gateway.token"
-      fi
-    fi
-    export OPENCLAW_GATEWAY_TOKEN
-
+    # OPENCLAW_GATEWAY_TOKEN was already resolved + exported at the top
+    # of this script (reused from openclaw.json if the setup wizard ran,
+    # so the CLI's `openclaw health` and this gateway process always
+    # agree on the same token).
     openclaw_gateway_watchdog() {
       export OPENCLAW_DISABLE_SYSTEMD=1
       while true; do
